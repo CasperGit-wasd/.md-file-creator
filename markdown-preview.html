@@ -22,6 +22,16 @@
             background-color: #f6f8fa;
         }
 
+        body.dark-mode {
+            background-color: #0d1117;
+            color: #c9d1d9;
+        }
+
+        body.dark-mode textarea, body.dark-mode #preview {
+            background-color: #0d1117;
+            color: #c9d1d9;
+        }
+
         .header {
             background-color: #fff;
             border-bottom: 1px solid #e1e4e8;
@@ -32,11 +42,20 @@
             box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
 
+        body.dark-mode .header {
+            background-color: #161b22;
+            border-bottom-color: #30363d;
+        }
+
         .header h1 {
             font-size: 18px;
             font-weight: 600;
             margin: 0;
             color: #24292e;
+        }
+
+        body.dark-mode .header h1 {
+            color: #c9d1d9;
         }
 
         .header-actions {
@@ -52,6 +71,13 @@
             flex-wrap: wrap;
             gap: 4px;
             align-items: center;
+            overflow-y: auto;
+            max-height: 100px;
+        }
+
+        body.dark-mode .toolbar-container {
+            background-color: #161b22;
+            border-bottom-color: #30363d;
         }
 
         .toolbar-group {
@@ -60,6 +86,10 @@
             border-right: 1px solid #e1e4e8;
             padding-right: 8px;
             margin-right: 8px;
+        }
+
+        body.dark-mode .toolbar-group {
+            border-right-color: #30363d;
         }
 
         .toolbar-group:last-child {
@@ -83,9 +113,20 @@
             white-space: nowrap;
         }
 
+        body.dark-mode .toolbar-btn, body.dark-mode .toolbar-select {
+            background-color: #21262d;
+            border-color: #444c56;
+            color: #c9d1d9;
+        }
+
         .toolbar-btn:hover, .toolbar-select:hover {
             background-color: #e6ebf1;
             border-color: #c5cad1;
+        }
+
+        body.dark-mode .toolbar-btn:hover, body.dark-mode .toolbar-select:hover {
+            background-color: #30363d;
+            border-color: #58a6ff;
         }
 
         .toolbar-btn.active {
@@ -113,9 +154,18 @@
             border-right: 1px solid #e1e4e8;
         }
 
+        body.dark-mode .editor-section, body.dark-mode .preview-section {
+            background-color: #0d1117;
+            border-right-color: #30363d;
+        }
+
         .preview-section {
             border-right: none;
             background-color: #f6f8fa;
+        }
+
+        body.dark-mode .preview-section {
+            background-color: #0d1117;
         }
 
         .section-header {
@@ -125,6 +175,12 @@
             font-weight: 600;
             font-size: 13px;
             color: #24292e;
+        }
+
+        body.dark-mode .section-header {
+            background-color: #161b22;
+            border-bottom-color: #30363d;
+            color: #c9d1d9;
         }
 
         textarea {
@@ -140,6 +196,11 @@
             line-height: 1.6;
         }
 
+        body.dark-mode textarea {
+            background-color: #0d1117;
+            color: #c9d1d9;
+        }
+
         textarea::placeholder {
             color: #6a737d;
         }
@@ -150,8 +211,12 @@
             overflow-y: auto;
             background-color: #fff;
             margin: 0 auto;
-            max-width: 800px;
+            max-width: 900px;
             width: 100%;
+        }
+
+        body.dark-mode #preview {
+            background-color: #0d1117;
         }
 
         /* GitHub-style Markdown rendering */
@@ -162,6 +227,10 @@
             line-height: 1.25;
             border-bottom: 1px solid #eaecef;
             margin: 24px 0 16px 0;
+        }
+
+        body.dark-mode #preview h1 {
+            border-bottom-color: #30363d;
         }
 
         #preview h1:first-child {
@@ -175,6 +244,10 @@
             line-height: 1.25;
             border-bottom: 1px solid #eaecef;
             margin: 24px 0 16px 0;
+        }
+
+        body.dark-mode #preview h2 {
+            border-bottom-color: #30363d;
         }
 
         #preview h3 {
@@ -195,6 +268,10 @@
         #preview a {
             color: #0366d6;
             text-decoration: none;
+        }
+
+        body.dark-mode #preview a {
+            color: #58a6ff;
         }
 
         #preview a:hover {
@@ -219,6 +296,10 @@
             font-family: 'Monaco', 'Courier New', monospace;
         }
 
+        body.dark-mode #preview code {
+            background-color: rgba(110, 118, 129, 0.4);
+        }
+
         #preview pre {
             padding: 16px;
             overflow: auto;
@@ -227,6 +308,10 @@
             background-color: #f6f8fa;
             border-radius: 6px;
             margin-bottom: 16px;
+        }
+
+        body.dark-mode #preview pre {
+            background-color: #161b22;
         }
 
         #preview pre code {
@@ -245,6 +330,11 @@
             margin: 0 0 16px 0;
         }
 
+        body.dark-mode #preview blockquote {
+            color: #8b949e;
+            border-left-color: #30363d;
+        }
+
         #preview table {
             border-collapse: collapse;
             width: 100%;
@@ -257,8 +347,16 @@
             text-align: left;
         }
 
+        body.dark-mode #preview table th, body.dark-mode #preview table td {
+            border-color: #30363d;
+        }
+
         #preview table tr:nth-child(2n) {
             background-color: #f6f8fa;
+        }
+
+        body.dark-mode #preview table tr:nth-child(2n) {
+            background-color: #161b22;
         }
 
         #preview img {
@@ -276,6 +374,10 @@
             border: 0;
         }
 
+        body.dark-mode #preview hr {
+            background-color: #30363d;
+        }
+
         /* Note styles */
         .note-note, .note-warning, .note-tip, .note-caution, .note-important {
             padding: 12px 16px;
@@ -290,10 +392,18 @@
             color: #0366d6;
         }
 
+        body.dark-mode .note-note {
+            background-color: rgba(3, 102, 214, 0.2);
+        }
+
         .note-warning {
             background-color: #fffbeb;
             border-left-color: #f59e0b;
             color: #d97706;
+        }
+
+        body.dark-mode .note-warning {
+            background-color: rgba(245, 158, 11, 0.2);
         }
 
         .note-tip {
@@ -302,16 +412,28 @@
             color: #059669;
         }
 
+        body.dark-mode .note-tip {
+            background-color: rgba(16, 185, 129, 0.2);
+        }
+
         .note-caution {
             background-color: #fef2f2;
             border-left-color: #ef4444;
             color: #dc2626;
         }
 
+        body.dark-mode .note-caution {
+            background-color: rgba(239, 68, 68, 0.2);
+        }
+
         .note-important {
             background-color: #f3e8ff;
             border-left-color: #a855f7;
             color: #7e22ce;
+        }
+
+        body.dark-mode .note-important {
+            background-color: rgba(168, 85, 247, 0.2);
         }
 
         .note-title {
@@ -327,6 +449,10 @@
             background-color: #f6f8fa;
             padding: 16px;
             border-radius: 6px;
+        }
+
+        body.dark-mode .mermaid {
+            background-color: #161b22;
         }
 
         /* Modal styles */
@@ -358,6 +484,11 @@
             overflow-y: auto;
         }
 
+        body.dark-mode .modal-content {
+            background-color: #161b22;
+            color: #c9d1d9;
+        }
+
         .modal-header {
             font-size: 18px;
             font-weight: 600;
@@ -375,6 +506,10 @@
             color: #6a737d;
         }
 
+        body.dark-mode .modal-close {
+            color: #8b949e;
+        }
+
         .form-group {
             margin-bottom: 16px;
         }
@@ -387,6 +522,10 @@
             color: #24292e;
         }
 
+        body.dark-mode .form-group label {
+            color: #c9d1d9;
+        }
+
         .form-group input, .form-group textarea, .form-group select {
             width: 100%;
             padding: 8px 12px;
@@ -395,6 +534,13 @@
             font-family: inherit;
             font-size: 13px;
             color: #24292e;
+            background-color: #fff;
+        }
+
+        body.dark-mode .form-group input, body.dark-mode .form-group textarea, body.dark-mode .form-group select {
+            background-color: #0d1117;
+            color: #c9d1d9;
+            border-color: #30363d;
         }
 
         .form-group textarea {
@@ -435,8 +581,18 @@
             border-color: #d1d5da;
         }
 
+        body.dark-mode .btn-secondary {
+            background-color: #21262d;
+            color: #c9d1d9;
+            border-color: #444c56;
+        }
+
         .btn-secondary:hover {
             background-color: #e6ebf1;
+        }
+
+        body.dark-mode .btn-secondary:hover {
+            background-color: #30363d;
         }
 
         .color-picker {
@@ -463,31 +619,6 @@
             border-color: #0366d6;
         }
 
-        .controls {
-            padding: 12px 16px;
-            background-color: #f6f8fa;
-            border-top: 1px solid #e1e4e8;
-            display: flex;
-            gap: 8px;
-        }
-
-        .controls button {
-            padding: 6px 12px;
-            font-size: 12px;
-            font-weight: 500;
-            color: #24292e;
-            background-color: #eff3f6;
-            border: 1px solid #d1d5da;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .controls button:hover {
-            background-color: #e6ebf1;
-            border-color: #c5cad1;
-        }
-
         .badge-container {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -505,9 +636,19 @@
             transition: all 0.2s;
         }
 
+        body.dark-mode .badge-item {
+            background-color: #161b22;
+            border-color: #30363d;
+        }
+
         .badge-item:hover {
             background-color: #ddf4ff;
             border-color: #79c0ff;
+        }
+
+        body.dark-mode .badge-item:hover {
+            background-color: #0d1117;
+            border-color: #58a6ff;
         }
 
         @media (max-width: 1024px) {
@@ -521,49 +662,19 @@
                 border-bottom: 1px solid #e1e4e8;
             }
 
+            body.dark-mode .editor-section, body.dark-mode .preview-section {
+                border-bottom-color: #30363d;
+            }
+
             .preview-section {
                 border-bottom: none;
             }
-        }
-
-        .dropdown-menu {
-            position: absolute;
-            background-color: #fff;
-            border: 1px solid #d1d5da;
-            border-radius: 6px;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
-            z-index: 100;
-            min-width: 200px;
-            max-height: 400px;
-            overflow-y: auto;
-        }
-
-        .dropdown-item {
-            padding: 8px 12px;
-            cursor: pointer;
-            transition: background-color 0.2s;
-            font-size: 12px;
-            border-bottom: 1px solid #e1e4e8;
-        }
-
-        .dropdown-item:last-child {
-            border-bottom: none;
-        }
-
-        .dropdown-item:hover {
-            background-color: #f6f8fa;
-        }
-
-        .dropdown-divider {
-            height: 1px;
-            background-color: #e1e4e8;
-            margin: 4px 0;
         }
     </style>
 </head>
 <body>
     <div class="header">
-        <h1>📝 Markdown Editor with AI Tools</h1>
+        <h1>📝 Markdown Editor</h1>
         <div class="header-actions">
             <button class="toolbar-btn" onclick="toggleTheme()" title="Toggle Dark Mode">
                 <i class="fas fa-moon"></i>
@@ -574,10 +685,10 @@
     <div class="toolbar-container">
         <!-- Text Formatting -->
         <div class="toolbar-group">
-            <button class="toolbar-btn" onclick="insertMarkdown('**', '**', 'Bold')" title="Bold (Ctrl+B)">
+            <button class="toolbar-btn" onclick="insertMarkdown('**', '**', 'Bold')" title="Bold">
                 <i class="fas fa-bold"></i>
             </button>
-            <button class="toolbar-btn" onclick="insertMarkdown('*', '*', 'Italic')" title="Italic (Ctrl+I)">
+            <button class="toolbar-btn" onclick="insertMarkdown('*', '*', 'Italic')" title="Italic">
                 <i class="fas fa-italic"></i>
             </button>
             <button class="toolbar-btn" onclick="insertMarkdown('~~', '~~', 'Strikethrough')" title="Strikethrough">
@@ -592,12 +703,12 @@
         <div class="toolbar-group">
             <select class="toolbar-select" onchange="insertHeading(this.value); this.value=''" title="Heading">
                 <option value="">Heading</option>
-                <option value="1"># Heading 1</option>
-                <option value="2">## Heading 2</option>
-                <option value="3">### Heading 3</option>
-                <option value="4">#### Heading 4</option>
-                <option value="5">##### Heading 5</option>
-                <option value="6">###### Heading 6</option>
+                <option value="1"># H1</option>
+                <option value="2">## H2</option>
+                <option value="3">### H3</option>
+                <option value="4">#### H4</option>
+                <option value="5">##### H5</option>
+                <option value="6">###### H6</option>
             </select>
         </div>
 
@@ -619,7 +730,7 @@
             <button class="toolbar-btn" onclick="openModal('tableModal')" title="Insert Table">
                 <i class="fas fa-table"></i>
             </button>
-            <button class="toolbar-btn" onclick="insertMarkdown('> ', '', 'Blockquote')" title="Quote">
+            <button class="toolbar-btn" onclick="insertMarkdown('> ', '', 'Quote')" title="Quote">
                 <i class="fas fa-quote-left"></i>
             </button>
         </div>
@@ -629,7 +740,7 @@
             <button class="toolbar-btn" onclick="insertCodeBlock()" title="Code Block">
                 <i class="fas fa-rectangle-code"></i>
             </button>
-            <button class="toolbar-btn" onclick="insertMarkdown('---', '', 'Horizontal Line')" title="Horizontal Line">
+            <button class="toolbar-btn" onclick="insertAtCursor('\n---\n')" title="Horizontal Line">
                 <i class="fas fa-minus"></i>
             </button>
         </div>
@@ -652,9 +763,6 @@
             <button class="toolbar-btn" onclick="openModal('badgeModal')" title="Shields.io Badge">
                 <i class="fas fa-shield"></i>
             </button>
-            <button class="toolbar-btn" onclick="openModal('buttonModal')" title="Button">
-                <i class="fas fa-square"></i>
-            </button>
         </div>
 
         <!-- Diagrams -->
@@ -662,21 +770,18 @@
             <button class="toolbar-btn" onclick="openModal('mermaidModal')" title="Mermaid Diagram">
                 <i class="fas fa-diagram-project"></i>
             </button>
-            <button class="toolbar-btn" onclick="openModal('chartModal')" title="Chart">
-                <i class="fas fa-chart-bar"></i>
-            </button>
         </div>
 
         <!-- Utilities -->
         <div class="toolbar-group">
-            <button class="toolbar-btn" onclick="clearEditor()" title="Clear All">
-                <i class="fas fa-trash"></i>
-            </button>
             <button class="toolbar-btn" onclick="downloadMarkdown()" title="Download .md">
                 <i class="fas fa-download"></i>
             </button>
             <button class="toolbar-btn" onclick="copyMarkdown()" title="Copy Markdown">
                 <i class="fas fa-copy"></i>
+            </button>
+            <button class="toolbar-btn" onclick="clearEditor()" title="Clear All">
+                <i class="fas fa-trash"></i>
             </button>
         </div>
     </div>
@@ -684,7 +789,10 @@
     <div class="container">
         <div class="editor-section">
             <div class="section-header">✏️ Editor</div>
-            <textarea id="markdown-input" placeholder="Start typing your markdown here..."></textarea>
+            <textarea id="markdown-input" placeholder="Start typing your markdown here...
+
+# Welcome
+Try the toolbar buttons above to format your text!"></textarea>
         </div>
 
         <div class="preview-section">
@@ -723,16 +831,12 @@
                 <button class="modal-close" onclick="closeModal('imageModal')">&times;</button>
             </div>
             <div class="form-group">
-                <label>Alt Text (description)</label>
+                <label>Alt Text</label>
                 <input type="text" id="imageAlt" placeholder="Image description">
             </div>
             <div class="form-group">
                 <label>Image URL</label>
                 <input type="text" id="imageUrl" placeholder="https://example.com/image.png">
-            </div>
-            <div class="form-group">
-                <label>Width (optional)</label>
-                <input type="text" id="imageWidth" placeholder="400">
             </div>
             <div class="modal-buttons">
                 <button class="btn-secondary" onclick="closeModal('imageModal')">Cancel</button>
@@ -799,57 +903,25 @@
                 <button class="modal-close" onclick="closeModal('badgeModal')">&times;</button>
             </div>
             <div class="form-group">
-                <label>Quick Select</label>
+                <label>Quick Badges</label>
                 <div class="badge-container">
-                    <div class="badge-item" onclick="insertBadge('npm', '@latest')">NPM Version</div>
-                    <div class="badge-item" onclick="insertBadge('github', 'license')">License</div>
-                    <div class="badge-item" onclick="insertBadge('build', 'passing')">Build Status</div>
-                    <div class="badge-item" onclick="insertBadge('coverage', '95%')">Coverage</div>
-                    <div class="badge-item" onclick="insertBadge('downloads', '1000k')">Downloads</div>
-                    <div class="badge-item" onclick="insertBadge('stars', '5k')">Stars</div>
+                    <div class="badge-item" onclick="insertShieldBadge('npm')">📦 NPM Version</div>
+                    <div class="badge-item" onclick="insertShieldBadge('license')">📜 License</div>
+                    <div class="badge-item" onclick="insertShieldBadge('build')">✅ Build</div>
+                    <div class="badge-item" onclick="insertShieldBadge('coverage')">📊 Coverage</div>
+                    <div class="badge-item" onclick="insertShieldBadge('downloads')">⬇️ Downloads</div>
+                    <div class="badge-item" onclick="insertShieldBadge('stars')">⭐ Stars</div>
                 </div>
             </div>
             <div class="form-group">
                 <label>Custom Badge</label>
-                <input type="text" id="badgeLabel" placeholder="label">
-                <input type="text" id="badgeMessage" placeholder="message" style="margin-top: 8px;">
-                <input type="text" id="badgeColor" placeholder="blue" style="margin-top: 8px;">
+                <input type="text" id="badgeLabel" placeholder="e.g., status">
+                <input type="text" id="badgeMessage" placeholder="e.g., active" style="margin-top: 8px;">
+                <input type="text" id="badgeColor" placeholder="e.g., blue" style="margin-top: 8px;">
             </div>
             <div class="modal-buttons">
                 <button class="btn-secondary" onclick="closeModal('badgeModal')">Cancel</button>
-                <button class="btn-primary" onclick="insertCustomBadge()">Insert</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Button Modal -->
-    <div id="buttonModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <span>Insert Button</span>
-                <button class="modal-close" onclick="closeModal('buttonModal')">&times;</button>
-            </div>
-            <div class="form-group">
-                <label>Button Text</label>
-                <input type="text" id="buttonText" placeholder="Click me">
-            </div>
-            <div class="form-group">
-                <label>Link URL</label>
-                <input type="text" id="buttonUrl" placeholder="https://example.com">
-            </div>
-            <div class="form-group">
-                <label>Color</label>
-                <div class="color-picker">
-                    <div class="color-option" style="background-color: #2da44e;" onclick="selectColor(this, 'green')" data-color="green"></div>
-                    <div class="color-option" style="background-color: #0366d6;" onclick="selectColor(this, 'blue')" data-color="blue"></div>
-                    <div class="color-option" style="background-color: #6f42c1;" onclick="selectColor(this, 'purple')" data-color="purple"></div>
-                    <div class="color-option" style="background-color: #d1180b;" onclick="selectColor(this, 'red')" data-color="red"></div>
-                    <div class="color-option" style="background-color: #f59e0b;" onclick="selectColor(this, 'orange')" data-color="orange"></div>
-                </div>
-            </div>
-            <div class="modal-buttons">
-                <button class="btn-secondary" onclick="closeModal('buttonModal')">Cancel</button>
-                <button class="btn-primary" onclick="insertButton()">Insert</button>
+                <button class="btn-primary" onclick="insertCustomBadge()">Insert Custom</button>
             </div>
         </div>
     </div>
@@ -865,52 +937,21 @@
                 <label>Diagram Type</label>
                 <select id="diagramType" onchange="updateDiagramTemplate()">
                     <option value="flowchart">Flowchart</option>
-                    <option value="graph">Graph</option>
                     <option value="sequence">Sequence</option>
                     <option value="gantt">Gantt</option>
                     <option value="class">Class</option>
-                    <option value="state">State</option>
                 </select>
             </div>
             <div class="form-group">
                 <label>Diagram Code</label>
-                <textarea id="diagramCode" placeholder="graph TD
+                <textarea id="diagramCode" placeholder="flowchart TD
     A[Start] --> B{Decision}
-                    B -->|Yes| C[Process]
-                    B -->|No| D[End]"></textarea>
+    B -->|Yes| C[Process]
+    B -->|No| D[End]"></textarea>
             </div>
             <div class="modal-buttons">
                 <button class="btn-secondary" onclick="closeModal('mermaidModal')">Cancel</button>
                 <button class="btn-primary" onclick="insertMermaidDiagram()">Insert</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Chart Modal -->
-    <div id="chartModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <span>ASCII Chart</span>
-                <button class="modal-close" onclick="closeModal('chartModal')">&times;</button>
-            </div>
-            <div class="form-group">
-                <label>Chart Type</label>
-                <select id="chartType">
-                    <option value="bar">Bar Chart</option>
-                    <option value="table">Data Table</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label>Chart Data</label>
-                <textarea id="chartData" placeholder="| Item | Value |
-|------|-------|
-| A    | 100   |
-| B    | 200   |
-| C    | 150   |"></textarea>
-            </div>
-            <div class="modal-buttons">
-                <button class="btn-secondary" onclick="closeModal('chartModal')">Cancel</button>
-                <button class="btn-primary" onclick="insertChart()">Insert</button>
             </div>
         </div>
     </div>
@@ -937,16 +978,14 @@
             const cleanHTML = DOMPurify.sanitize(html);
             preview.innerHTML = cleanHTML;
             
-            // Re-initialize mermaid diagrams
             try {
                 mermaid.contentLoaded();
             } catch(e) {
-                console.log('Mermaid not ready');
+                console.log('Mermaid loading...');
             }
         }
 
         function insertMarkdown(before, after, placeholder) {
-            const textarea = document.getElementById('markdown-input');
             const start = textarea.selectionStart;
             const end = textarea.selectionEnd;
             const text = textarea.value;
@@ -977,8 +1016,8 @@
         }
 
         function insertCodeBlock() {
-            const language = prompt('Enter language (e.g., javascript, python, bash):', 'javascript') || 'javascript';
-            insertAtCursor('\n\`\`\`' + language + '\ncode here\n\`\`\`\n');
+            const language = prompt('Enter language (javascript, python, bash, etc.):', 'javascript') || 'javascript';
+            insertAtCursor('\n\`\`\`' + language + '\n// your code here\n\`\`\`\n');
         }
 
         function insertTable() {
@@ -1010,15 +1049,17 @@
             const text = document.getElementById('linkText').value || 'Link';
             const url = document.getElementById('linkUrl').value || 'https://example.com';
             insertAtCursor('[' + text + '](' + url + ')');
+            document.getElementById('linkText').value = '';
+            document.getElementById('linkUrl').value = '';
             closeModal('linkModal');
         }
 
         function insertImage() {
             const alt = document.getElementById('imageAlt').value || 'Image';
             const url = document.getElementById('imageUrl').value || 'https://example.com/image.png';
-            const width = document.getElementById('imageWidth').value;
-            const widthStr = width ? '|width=' + width : '';
-            insertAtCursor('![' + alt + '](' + url + widthStr + ')');
+            insertAtCursor('![' + alt + '](' + url + ')');
+            document.getElementById('imageAlt').value = '';
+            document.getElementById('imageUrl').value = '';
             closeModal('imageModal');
         }
 
@@ -1027,23 +1068,24 @@
             const content = document.getElementById('noteContent').value || 'Note content';
             const markdown = '\n> [!' + type.toUpperCase() + ']\n> ' + content + '\n';
             insertAtCursor(markdown);
+            document.getElementById('noteContent').value = '';
             closeModal('noteModal');
         }
 
-        function insertBadge(type, value) {
+        function insertShieldBadge(type) {
             let badge = '';
             if (type === 'npm') {
-                badge = '[![npm version](https://img.shields.io/npm/v/package-name.svg)](https://www.npmjs.com/package/package-name)';
-            } else if (type === 'github') {
-                badge = '[![GitHub license](https://img.shields.io/github/license/username/repo)](https://github.com/username/repo/blob/master/LICENSE)';
+                badge = '[![npm](https://img.shields.io/npm/v/your-package.svg)](https://www.npmjs.com/package/your-package)';
+            } else if (type === 'license') {
+                badge = '[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)';
             } else if (type === 'build') {
-                badge = '[![Build Status](https://img.shields.io/travis/username/repo)](https://travis-ci.org/username/repo)';
+                badge = '[![Build Status](https://img.shields.io/badge/build-passing-brightgreen)](https://github.com)';
             } else if (type === 'coverage') {
-                badge = '[![Coverage Status](https://img.shields.io/codecov/c/github/username/repo)](https://codecov.io/github/username/repo)';
+                badge = '[![Coverage](https://img.shields.io/badge/coverage-95%25-brightgreen)](https://github.com)';
             } else if (type === 'downloads') {
-                badge = '[![Downloads](https://img.shields.io/npm/dm/package-name.svg)](https://www.npmjs.com/package/package-name)';
+                badge = '[![Downloads](https://img.shields.io/npm/dm/your-package.svg)](https://www.npmjs.com/package/your-package)';
             } else if (type === 'stars') {
-                badge = '[![GitHub stars](https://img.shields.io/github/stars/username/repo)](https://github.com/username/repo)';
+                badge = '[![GitHub stars](https://img.shields.io/github/stars/username/repo.svg)](https://github.com/username/repo)';
             }
             insertAtCursor(badge + '\n');
             closeModal('badgeModal');
@@ -1054,51 +1096,40 @@
             const message = document.getElementById('badgeMessage').value || 'message';
             const color = document.getElementById('badgeColor').value || 'blue';
             const url = 'https://img.shields.io/badge/' + label + '-' + message + '-' + color;
-            insertAtCursor('![Badge](' + url + ')\n');
+            insertAtCursor('![' + label + '](' + url + ')\n');
+            document.getElementById('badgeLabel').value = '';
+            document.getElementById('badgeMessage').value = '';
+            document.getElementById('badgeColor').value = '';
             closeModal('badgeModal');
         }
 
-        function insertButton() {
-            const text = document.getElementById('buttonText').value || 'Button';
-            const url = document.getElementById('buttonUrl').value || '#';
-            const color = document.querySelector('.color-option.selected')?.getAttribute('data-color') || 'blue';
-            
-            const colors = {
-                'green': '#2da44e',
-                'blue': '#0366d6',
-                'purple': '#6f42c1',
-                'red': '#d1180b',
-                'orange': '#f59e0b'
-            };
-            
-            const markdown = '[<button style="background-color: ' + colors[color] + '; color: white; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer;">' + text + '</button>](' + url + ')\n';
-            insertAtCursor(markdown);
-            closeModal('buttonModal');
-        }
-
         function insertMermaidDiagram() {
-            const code = document.getElementById('diagramCode').value || 'graph TD\nA[Start] --> B[End]';
+            const code = document.getElementById('diagramCode').value || 'flowchart TD\nA[Start] --> B[End]';
             const markdown = '\n\`\`\`mermaid\n' + code + '\n\`\`\`\n';
             insertAtCursor(markdown);
             closeModal('mermaidModal');
         }
 
-        function insertChart() {
-            const type = document.getElementById('chartType').value;
-            const data = document.getElementById('chartData').value;
-            insertAtCursor('\n' + data + '\n');
-            closeModal('chartModal');
-        }
-
-        function selectColor(element, color) {
-            document.querySelectorAll('.color-option').forEach(el => el.classList.remove('selected'));
-            element.classList.add('selected');
+        function updateDiagramTemplate() {
+            const type = document.getElementById('diagramType').value;
+            let template = '';
+            
+            if (type === 'flowchart') {
+                template = 'flowchart TD\n    A[Start] --> B{Decision}\n    B -->|Yes| C[Process]\n    B -->|No| D[End]';
+            } else if (type === 'sequence') {
+                template = 'sequenceDiagram\n    User->>API: Request\n    API->>DB: Query\n    DB-->>API: Data\n    API-->>User: Response';
+            } else if (type === 'gantt') {
+                template = 'gantt\n    title Project\n    section Phase\n    Task A :a1, 2024-01-01, 30d\n    Task B :a2, after a1, 30d';
+            } else if (type === 'class') {
+                template = 'classDiagram\n    class Animal {\n        string name\n        move()';
+            }
+            
+            document.getElementById('diagramCode').value = template;
         }
 
         function insertAtCursor(text) {
             const start = textarea.selectionStart;
             textarea.value = textarea.value.substring(0, start) + text + textarea.value.substring(start);
-            textarea.selectionStart = textarea.selectionEnd = start + text.length;
             textarea.focus();
             updatePreview();
         }
@@ -1112,7 +1143,7 @@
         }
 
         function clearEditor() {
-            if (confirm('Clear all content?')) {
+            if (confirm('Clear all content? This cannot be undone.')) {
                 textarea.value = '';
                 updatePreview();
                 localStorage.removeItem('markdown-content');
@@ -1120,7 +1151,7 @@
         }
 
         function downloadMarkdown() {
-            const content = textarea.value;
+            const content = textarea.value || '# README\n\nStart typing...';
             const element = document.createElement('a');
             element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(content));
             element.setAttribute('download', 'README.md');
@@ -1133,32 +1164,15 @@
         function copyMarkdown() {
             const content = textarea.value;
             navigator.clipboard.writeText(content).then(() => {
-                alert('Markdown copied to clipboard!');
+                alert('✅ Markdown copied to clipboard!');
+            }).catch(() => {
+                alert('❌ Failed to copy');
             });
         }
 
-        function updateDiagramTemplate() {
-            const type = document.getElementById('diagramType').value;
-            let template = '';
-            
-            if (type === 'flowchart') {
-                template = 'graph TD\n    A[Start] --> B{Decision}\n    B -->|Yes| C[Process]\n    B -->|No| D[End]';
-            } else if (type === 'sequence') {
-                template = 'sequenceDiagram\n    participant A as User\n    participant B as Server\n    A->>B: Request\n    B-->>A: Response';
-            } else if (type === 'gantt') {
-                template = 'gantt\n    title Project Timeline\n    section Phase\n    Task 1 :a1, 2024-01-01, 30d\n    Task 2 :a2, after a1, 30d';
-            } else if (type === 'class') {
-                template = 'classDiagram\n    class Animal {\n        +name: String\n        +move()\n    }';
-            } else if (type === 'state') {
-                template = 'stateDiagram\n    [*] --> Idle\n    Idle --> Processing\n    Processing --> [*]';
-            }
-            
-            document.getElementById('diagramCode').value = template;
-        }
-
         function toggleTheme() {
-            document.body.style.backgroundColor = 
-                document.body.style.backgroundColor === 'rgb(246, 248, 250)' ? '#1e1e1e' : '#f6f8fa';
+            document.body.classList.toggle('dark-mode');
+            localStorage.setItem('theme-mode', document.body.classList.contains('dark-mode') ? 'dark' : 'light');
         }
 
         // Close modals when clicking outside
@@ -1168,12 +1182,17 @@
             }
         };
 
-        // Load saved content
+        // Load saved content and theme
         window.addEventListener('load', function() {
             const saved = localStorage.getItem('markdown-content');
             if (saved) {
                 textarea.value = saved;
                 updatePreview();
+            }
+            
+            const theme = localStorage.getItem('theme-mode');
+            if (theme === 'dark') {
+                document.body.classList.add('dark-mode');
             }
         });
 

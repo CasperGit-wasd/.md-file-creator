@@ -975,7 +975,6 @@ Try the toolbar buttons above to format your text!"></textarea>
         marked.use({
             renderer: {
                 blockquote(token) {
-                    // Check if it's a GitHub alert format: > [!TYPE]
                     const text = token.text;
                     const alertMatch = text.match(/^<p>\[!(\w+)\]/);
                     
@@ -1011,9 +1010,14 @@ Try the toolbar buttons above to format your text!"></textarea>
         function updatePreview() {
             const markdown = textarea.value;
             const html = marked.parse(markdown);
-            const cleanHTML = DOMPurify.sanitize(html);
+            const cleanHTML = DOMPurify.sanitize(html, {
+                ALLOWED_TAGS: ['p', 'strong', 'em', 'u', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'ul', 'ol', 'li', 'blockquote', 'code', 'pre', 'a', 'img', 'br', 'hr', 'table', 'thead', 'tbody', 'tr', 'td', 'th', 'div', 'span', 's'],
+                ALLOWED_ATTR: ['href', 'src', 'alt', 'title', 'class', 'id', 'style'],
+                ALLOW_DATA_ATTR: true
+            });
             preview.innerHTML = cleanHTML;
             
+            // Render mermaid diagrams
             try {
                 mermaid.contentLoaded();
             } catch(e) {
@@ -1209,6 +1213,7 @@ Try the toolbar buttons above to format your text!"></textarea>
         function toggleTheme() {
             document.body.classList.toggle('dark-mode');
             localStorage.setItem('theme-mode', document.body.classList.contains('dark-mode') ? 'dark' : 'light');
+            updatePreview();
         }
 
         // Close modals when clicking outside

@@ -378,67 +378,76 @@
             background-color: #30363d;
         }
 
-        /* Note styles */
-        .note-note, .note-warning, .note-tip, .note-caution, .note-important {
+        /* GitHub Alert/Note styles */
+        .markdown-alert {
             padding: 12px 16px;
             margin-bottom: 16px;
             border-radius: 6px;
             border-left: 4px solid;
+            background-color: #f0f9ff;
+            border-color: #0366d6;
         }
 
-        .note-note {
+        .markdown-alert.note {
             background-color: #f0f9ff;
             border-left-color: #0366d6;
-            color: #0366d6;
         }
 
-        body.dark-mode .note-note {
+        .markdown-alert.warning {
+            background-color: #fffbeb;
+            border-left-color: #f59e0b;
+        }
+
+        .markdown-alert.tip {
+            background-color: #f0fdf4;
+            border-left-color: #10b981;
+        }
+
+        .markdown-alert.caution {
+            background-color: #fef2f2;
+            border-left-color: #ef4444;
+        }
+
+        .markdown-alert.important {
+            background-color: #f3e8ff;
+            border-left-color: #a855f7;
+        }
+
+        body.dark-mode .markdown-alert {
             background-color: rgba(3, 102, 214, 0.2);
         }
 
-        .note-warning {
-            background-color: #fffbeb;
-            border-left-color: #f59e0b;
-            color: #d97706;
-        }
-
-        body.dark-mode .note-warning {
+        body.dark-mode .markdown-alert.warning {
             background-color: rgba(245, 158, 11, 0.2);
         }
 
-        .note-tip {
-            background-color: #f0fdf4;
-            border-left-color: #10b981;
-            color: #059669;
-        }
-
-        body.dark-mode .note-tip {
+        body.dark-mode .markdown-alert.tip {
             background-color: rgba(16, 185, 129, 0.2);
         }
 
-        .note-caution {
-            background-color: #fef2f2;
-            border-left-color: #ef4444;
-            color: #dc2626;
-        }
-
-        body.dark-mode .note-caution {
+        body.dark-mode .markdown-alert.caution {
             background-color: rgba(239, 68, 68, 0.2);
         }
 
-        .note-important {
-            background-color: #f3e8ff;
-            border-left-color: #a855f7;
-            color: #7e22ce;
-        }
-
-        body.dark-mode .note-important {
+        body.dark-mode .markdown-alert.important {
             background-color: rgba(168, 85, 247, 0.2);
         }
 
-        .note-title {
-            font-weight: 600;
+        .markdown-alert p {
+            margin: 0;
+            font-weight: 500;
+        }
+
+        .markdown-alert p:first-child {
+            display: flex;
+            align-items: center;
+            gap: 8px;
             margin-bottom: 4px;
+        }
+
+        .markdown-alert p:not(:first-child) {
+            margin-top: 8px;
+            font-weight: 400;
         }
 
         /* Mermaid diagram */
@@ -871,22 +880,22 @@ Try the toolbar buttons above to format your text!"></textarea>
     <div id="noteModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <span>Insert Note</span>
+                <span>GitHub Alert Box</span>
                 <button class="modal-close" onclick="closeModal('noteModal')">&times;</button>
             </div>
             <div class="form-group">
-                <label>Note Type</label>
+                <label>Alert Type</label>
                 <select id="noteType">
-                    <option value="note">📘 Note</option>
-                    <option value="warning">⚠️ Warning</option>
-                    <option value="tip">💡 Tip</option>
-                    <option value="caution">🔴 Caution</option>
-                    <option value="important">⭐ Important</option>
+                    <option value="note">📘 NOTE</option>
+                    <option value="warning">⚠️ WARNING</option>
+                    <option value="tip">💡 TIP</option>
+                    <option value="caution">🔴 CAUTION</option>
+                    <option value="important">⭐ IMPORTANT</option>
                 </select>
             </div>
             <div class="form-group">
                 <label>Content</label>
-                <textarea id="noteContent" placeholder="Enter your note content"></textarea>
+                <textarea id="noteContent" placeholder="Enter your alert content"></textarea>
             </div>
             <div class="modal-buttons">
                 <button class="btn-secondary" onclick="closeModal('noteModal')">Cancel</button>
@@ -905,7 +914,7 @@ Try the toolbar buttons above to format your text!"></textarea>
             <div class="form-group">
                 <label>Quick Badges</label>
                 <div class="badge-container">
-                    <div class="badge-item" onclick="insertShieldBadge('npm')">📦 NPM Version</div>
+                    <div class="badge-item" onclick="insertShieldBadge('npm')">📦 NPM</div>
                     <div class="badge-item" onclick="insertShieldBadge('license')">📜 License</div>
                     <div class="badge-item" onclick="insertShieldBadge('build')">✅ Build</div>
                     <div class="badge-item" onclick="insertShieldBadge('coverage')">📊 Coverage</div>
@@ -962,6 +971,33 @@ Try the toolbar buttons above to format your text!"></textarea>
         const textarea = document.getElementById('markdown-input');
         const preview = document.getElementById('preview');
 
+        // Custom marked extension for GitHub alerts
+        marked.use({
+            renderer: {
+                blockquote(token) {
+                    // Check if it's a GitHub alert format: > [!TYPE]
+                    const text = token.text;
+                    const alertMatch = text.match(/^<p>\[!(\w+)\]/);
+                    
+                    if (alertMatch) {
+                        const alertType = alertMatch[1].toLowerCase();
+                        const cleanText = text.replace(/^<p>\[!\w+\]\s*/, '').replace(/<\/p>$/, '');
+                        const alertClass = ['note', 'warning', 'tip', 'caution', 'important'].includes(alertType) ? alertType : 'note';
+                        
+                        let icon = '📘';
+                        if (alertType === 'warning') icon = '⚠️';
+                        else if (alertType === 'tip') icon = '💡';
+                        else if (alertType === 'caution') icon = '🔴';
+                        else if (alertType === 'important') icon = '⭐';
+                        
+                        return `<div class="markdown-alert ${alertClass}"><p><strong>${icon} ${alertType.toUpperCase()}</strong></p><p>${cleanText}</p></div>`;
+                    }
+                    
+                    return `<blockquote>\n${token.text}</blockquote>\n`;
+                }
+            }
+        });
+
         marked.setOptions({
             breaks: true,
             gfm: true,
@@ -1017,7 +1053,7 @@ Try the toolbar buttons above to format your text!"></textarea>
 
         function insertCodeBlock() {
             const language = prompt('Enter language (javascript, python, bash, etc.):', 'javascript') || 'javascript';
-            insertAtCursor('\n\`\`\`' + language + '\n// your code here\n\`\`\`\n');
+            insertAtCursor('\n```' + language + '\n// your code here\n```\n');
         }
 
         function insertTable() {
@@ -1064,10 +1100,10 @@ Try the toolbar buttons above to format your text!"></textarea>
         }
 
         function insertNote() {
-            const type = document.getElementById('noteType').value;
-            const content = document.getElementById('noteContent').value || 'Note content';
-            const markdown = '\n> [!' + type.toUpperCase() + ']\n> ' + content + '\n';
-            insertAtCursor(markdown);
+            const type = document.getElementById('noteType').value.toUpperCase();
+            const content = document.getElementById('noteContent').value || 'Content';
+            const markdown = '> [!' + type + ']\n> ' + content + '\n';
+            insertAtCursor('\n' + markdown + '\n');
             document.getElementById('noteContent').value = '';
             closeModal('noteModal');
         }
@@ -1105,7 +1141,7 @@ Try the toolbar buttons above to format your text!"></textarea>
 
         function insertMermaidDiagram() {
             const code = document.getElementById('diagramCode').value || 'flowchart TD\nA[Start] --> B[End]';
-            const markdown = '\n\`\`\`mermaid\n' + code + '\n\`\`\`\n';
+            const markdown = '\n```mermaid\n' + code + '\n```\n';
             insertAtCursor(markdown);
             closeModal('mermaidModal');
         }

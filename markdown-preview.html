@@ -3,9 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Markdown Preview</title>
+    <title>Markdown Editor with AI Tools</title>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/dompurify/dist/purify.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
             margin: 0;
@@ -17,25 +19,103 @@
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
             line-height: 1.6;
             color: #24292e;
+            background-color: #f6f8fa;
+        }
+
+        .header {
             background-color: #fff;
+            border-bottom: 1px solid #e1e4e8;
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .header h1 {
+            font-size: 18px;
+            font-weight: 600;
+            margin: 0;
+            color: #24292e;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .toolbar-container {
+            background-color: #fff;
+            border-bottom: 1px solid #e1e4e8;
+            padding: 8px 16px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            align-items: center;
+        }
+
+        .toolbar-group {
+            display: flex;
+            gap: 2px;
+            border-right: 1px solid #e1e4e8;
+            padding-right: 8px;
+            margin-right: 8px;
+        }
+
+        .toolbar-group:last-child {
+            border-right: none;
+            padding-right: 0;
+            margin-right: 0;
+        }
+
+        .toolbar-btn, .toolbar-select {
+            padding: 6px 10px;
+            font-size: 12px;
+            background-color: #f3f4f6;
+            border: 1px solid #d1d5da;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: #24292e;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            white-space: nowrap;
+        }
+
+        .toolbar-btn:hover, .toolbar-select:hover {
+            background-color: #e6ebf1;
+            border-color: #c5cad1;
+        }
+
+        .toolbar-btn.active {
+            background-color: #ddf4ff;
+            border-color: #79c0ff;
+            color: #0366d6;
+        }
+
+        .toolbar-select {
+            padding: 6px 8px;
         }
 
         .container {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            height: 100vh;
+            height: calc(100vh - 120px);
             gap: 0;
+            margin-top: 0;
         }
 
-        .editor-section,
-        .preview-section {
+        .editor-section, .preview-section {
             display: flex;
             flex-direction: column;
+            background-color: #fff;
             border-right: 1px solid #e1e4e8;
         }
 
         .preview-section {
             border-right: none;
+            background-color: #f6f8fa;
         }
 
         .section-header {
@@ -43,7 +123,7 @@
             background-color: #f6f8fa;
             border-bottom: 1px solid #e1e4e8;
             font-weight: 600;
-            font-size: 14px;
+            font-size: 13px;
             color: #24292e;
         }
 
@@ -57,6 +137,7 @@
             resize: none;
             background-color: #fff;
             color: #24292e;
+            line-height: 1.6;
         }
 
         textarea::placeholder {
@@ -65,9 +146,12 @@
 
         #preview {
             flex: 1;
-            padding: 16px;
+            padding: 24px;
             overflow-y: auto;
             background-color: #fff;
+            margin: 0 auto;
+            max-width: 800px;
+            width: 100%;
         }
 
         /* GitHub-style Markdown rendering */
@@ -99,23 +183,9 @@
             margin: 24px 0 16px 0;
         }
 
-        #preview h4 {
-            font-size: 1em;
+        #preview h4, #preview h5, #preview h6 {
             font-weight: 600;
-            margin: 24px 0 16px 0;
-        }
-
-        #preview h5 {
-            font-size: 0.875em;
-            font-weight: 600;
-            margin: 24px 0 16px 0;
-        }
-
-        #preview h6 {
-            font-size: 0.85em;
-            font-weight: 600;
-            color: #6a737d;
-            margin: 24px 0 16px 0;
+            margin: 16px 0;
         }
 
         #preview p {
@@ -131,8 +201,7 @@
             text-decoration: underline;
         }
 
-        #preview ul,
-        #preview ol {
+        #preview ul, #preview ol {
             padding-left: 2em;
             margin-bottom: 16px;
         }
@@ -182,10 +251,10 @@
             margin-bottom: 16px;
         }
 
-        #preview table th,
-        #preview table td {
+        #preview table th, #preview table td {
             padding: 6px 13px;
             border: 1px solid #dfe2e5;
+            text-align: left;
         }
 
         #preview table tr:nth-child(2n) {
@@ -196,6 +265,7 @@
             max-width: 100%;
             height: auto;
             margin: 16px 0;
+            border-radius: 6px;
         }
 
         #preview hr {
@@ -204,6 +274,193 @@
             margin: 24px 0;
             background-color: #e1e4e8;
             border: 0;
+        }
+
+        /* Note styles */
+        .note-note, .note-warning, .note-tip, .note-caution, .note-important {
+            padding: 12px 16px;
+            margin-bottom: 16px;
+            border-radius: 6px;
+            border-left: 4px solid;
+        }
+
+        .note-note {
+            background-color: #f0f9ff;
+            border-left-color: #0366d6;
+            color: #0366d6;
+        }
+
+        .note-warning {
+            background-color: #fffbeb;
+            border-left-color: #f59e0b;
+            color: #d97706;
+        }
+
+        .note-tip {
+            background-color: #f0fdf4;
+            border-left-color: #10b981;
+            color: #059669;
+        }
+
+        .note-caution {
+            background-color: #fef2f2;
+            border-left-color: #ef4444;
+            color: #dc2626;
+        }
+
+        .note-important {
+            background-color: #f3e8ff;
+            border-left-color: #a855f7;
+            color: #7e22ce;
+        }
+
+        .note-title {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        /* Mermaid diagram */
+        .mermaid {
+            display: flex;
+            justify-content: center;
+            margin: 16px 0;
+            background-color: #f6f8fa;
+            padding: 16px;
+            border-radius: 6px;
+        }
+
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background-color: #fff;
+            padding: 24px;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #6a737d;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 4px;
+            font-weight: 500;
+            font-size: 12px;
+            color: #24292e;
+        }
+
+        .form-group input, .form-group textarea, .form-group select {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #d1d5da;
+            border-radius: 4px;
+            font-family: inherit;
+            font-size: 13px;
+            color: #24292e;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 8px;
+            justify-content: flex-end;
+            margin-top: 20px;
+        }
+
+        .btn-primary, .btn-secondary {
+            padding: 8px 16px;
+            border-radius: 4px;
+            border: 1px solid;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 12px;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background-color: #2da44e;
+            color: #fff;
+            border-color: #26843b;
+        }
+
+        .btn-primary:hover {
+            background-color: #26843b;
+        }
+
+        .btn-secondary {
+            background-color: #f3f4f6;
+            color: #24292e;
+            border-color: #d1d5da;
+        }
+
+        .btn-secondary:hover {
+            background-color: #e6ebf1;
+        }
+
+        .color-picker {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 8px;
+        }
+
+        .color-option {
+            width: 32px;
+            height: 32px;
+            border-radius: 4px;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.2s;
+        }
+
+        .color-option:hover {
+            transform: scale(1.1);
+        }
+
+        .color-option.selected {
+            border-color: #0366d6;
         }
 
         .controls {
@@ -231,14 +488,35 @@
             border-color: #c5cad1;
         }
 
-        @media (max-width: 768px) {
+        .badge-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+        }
+
+        .badge-item {
+            padding: 8px;
+            background-color: #f6f8fa;
+            border: 1px solid #e1e4e8;
+            border-radius: 4px;
+            cursor: pointer;
+            text-align: center;
+            font-size: 11px;
+            transition: all 0.2s;
+        }
+
+        .badge-item:hover {
+            background-color: #ddf4ff;
+            border-color: #79c0ff;
+        }
+
+        @media (max-width: 1024px) {
             .container {
                 grid-template-columns: 1fr;
                 grid-template-rows: 1fr 1fr;
             }
 
-            .editor-section,
-            .preview-section {
+            .editor-section, .preview-section {
                 border-right: none;
                 border-bottom: 1px solid #e1e4e8;
             }
@@ -247,52 +525,407 @@
                 border-bottom: none;
             }
         }
+
+        .dropdown-menu {
+            position: absolute;
+            background-color: #fff;
+            border: 1px solid #d1d5da;
+            border-radius: 6px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+            z-index: 100;
+            min-width: 200px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .dropdown-item {
+            padding: 8px 12px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            font-size: 12px;
+            border-bottom: 1px solid #e1e4e8;
+        }
+
+        .dropdown-item:last-child {
+            border-bottom: none;
+        }
+
+        .dropdown-item:hover {
+            background-color: #f6f8fa;
+        }
+
+        .dropdown-divider {
+            height: 1px;
+            background-color: #e1e4e8;
+            margin: 4px 0;
+        }
     </style>
 </head>
 <body>
+    <div class="header">
+        <h1>📝 Markdown Editor with AI Tools</h1>
+        <div class="header-actions">
+            <button class="toolbar-btn" onclick="toggleTheme()" title="Toggle Dark Mode">
+                <i class="fas fa-moon"></i>
+            </button>
+        </div>
+    </div>
+
+    <div class="toolbar-container">
+        <!-- Text Formatting -->
+        <div class="toolbar-group">
+            <button class="toolbar-btn" onclick="insertMarkdown('**', '**', 'Bold')" title="Bold (Ctrl+B)">
+                <i class="fas fa-bold"></i>
+            </button>
+            <button class="toolbar-btn" onclick="insertMarkdown('*', '*', 'Italic')" title="Italic (Ctrl+I)">
+                <i class="fas fa-italic"></i>
+            </button>
+            <button class="toolbar-btn" onclick="insertMarkdown('~~', '~~', 'Strikethrough')" title="Strikethrough">
+                <i class="fas fa-strikethrough"></i>
+            </button>
+            <button class="toolbar-btn" onclick="insertMarkdown('`', '`', 'code')" title="Inline Code">
+                <i class="fas fa-code"></i>
+            </button>
+        </div>
+
+        <!-- Headings -->
+        <div class="toolbar-group">
+            <select class="toolbar-select" onchange="insertHeading(this.value); this.value=''" title="Heading">
+                <option value="">Heading</option>
+                <option value="1"># Heading 1</option>
+                <option value="2">## Heading 2</option>
+                <option value="3">### Heading 3</option>
+                <option value="4">#### Heading 4</option>
+                <option value="5">##### Heading 5</option>
+                <option value="6">###### Heading 6</option>
+            </select>
+        </div>
+
+        <!-- Lists -->
+        <div class="toolbar-group">
+            <button class="toolbar-btn" onclick="insertList('unordered')" title="Bullet List">
+                <i class="fas fa-list-ul"></i>
+            </button>
+            <button class="toolbar-btn" onclick="insertList('ordered')" title="Numbered List">
+                <i class="fas fa-list-ol"></i>
+            </button>
+            <button class="toolbar-btn" onclick="insertList('checklist')" title="Checklist">
+                <i class="fas fa-tasks"></i>
+            </button>
+        </div>
+
+        <!-- Tables & Quotes -->
+        <div class="toolbar-group">
+            <button class="toolbar-btn" onclick="openModal('tableModal')" title="Insert Table">
+                <i class="fas fa-table"></i>
+            </button>
+            <button class="toolbar-btn" onclick="insertMarkdown('> ', '', 'Blockquote')" title="Quote">
+                <i class="fas fa-quote-left"></i>
+            </button>
+        </div>
+
+        <!-- Code & Dividers -->
+        <div class="toolbar-group">
+            <button class="toolbar-btn" onclick="insertCodeBlock()" title="Code Block">
+                <i class="fas fa-rectangle-code"></i>
+            </button>
+            <button class="toolbar-btn" onclick="insertMarkdown('---', '', 'Horizontal Line')" title="Horizontal Line">
+                <i class="fas fa-minus"></i>
+            </button>
+        </div>
+
+        <!-- Links & Media -->
+        <div class="toolbar-group">
+            <button class="toolbar-btn" onclick="openModal('linkModal')" title="Insert Link">
+                <i class="fas fa-link"></i>
+            </button>
+            <button class="toolbar-btn" onclick="openModal('imageModal')" title="Insert Image">
+                <i class="fas fa-image"></i>
+            </button>
+        </div>
+
+        <!-- Special Elements -->
+        <div class="toolbar-group">
+            <button class="toolbar-btn" onclick="openModal('noteModal')" title="Note/Warning/Tip">
+                <i class="fas fa-lightbulb"></i>
+            </button>
+            <button class="toolbar-btn" onclick="openModal('badgeModal')" title="Shields.io Badge">
+                <i class="fas fa-shield"></i>
+            </button>
+            <button class="toolbar-btn" onclick="openModal('buttonModal')" title="Button">
+                <i class="fas fa-square"></i>
+            </button>
+        </div>
+
+        <!-- Diagrams -->
+        <div class="toolbar-group">
+            <button class="toolbar-btn" onclick="openModal('mermaidModal')" title="Mermaid Diagram">
+                <i class="fas fa-diagram-project"></i>
+            </button>
+            <button class="toolbar-btn" onclick="openModal('chartModal')" title="Chart">
+                <i class="fas fa-chart-bar"></i>
+            </button>
+        </div>
+
+        <!-- Utilities -->
+        <div class="toolbar-group">
+            <button class="toolbar-btn" onclick="clearEditor()" title="Clear All">
+                <i class="fas fa-trash"></i>
+            </button>
+            <button class="toolbar-btn" onclick="downloadMarkdown()" title="Download .md">
+                <i class="fas fa-download"></i>
+            </button>
+            <button class="toolbar-btn" onclick="copyMarkdown()" title="Copy Markdown">
+                <i class="fas fa-copy"></i>
+            </button>
+        </div>
+    </div>
+
     <div class="container">
         <div class="editor-section">
-            <div class="section-header">Markdown Editor</div>
-            <textarea id="markdown-input" placeholder="Enter your markdown here...
-
-# Heading 1
-## Heading 2
-
-**Bold text** and *italic text*
-
-- Bullet point 1
-- Bullet point 2
-
-[Link](https://example.com)
-
-\`\`\`javascript
-const hello = 'world';
-\`\`\`
-"></textarea>
-            <div class="controls">
-                <button onclick="clearEditor()">Clear</button>
-                <button onclick="downloadMarkdown()">Download</button>
-                <button onclick="copyHTML()">Copy HTML</button>
-            </div>
+            <div class="section-header">✏️ Editor</div>
+            <textarea id="markdown-input" placeholder="Start typing your markdown here..."></textarea>
         </div>
 
         <div class="preview-section">
-            <div class="section-header">Preview</div>
+            <div class="section-header">👁️ Preview</div>
             <div id="preview"></div>
         </div>
     </div>
 
+    <!-- Link Modal -->
+    <div id="linkModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span>Insert Link</span>
+                <button class="modal-close" onclick="closeModal('linkModal')">&times;</button>
+            </div>
+            <div class="form-group">
+                <label>Link Text</label>
+                <input type="text" id="linkText" placeholder="Click here">
+            </div>
+            <div class="form-group">
+                <label>URL</label>
+                <input type="text" id="linkUrl" placeholder="https://example.com">
+            </div>
+            <div class="modal-buttons">
+                <button class="btn-secondary" onclick="closeModal('linkModal')">Cancel</button>
+                <button class="btn-primary" onclick="insertLink()">Insert</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Image Modal -->
+    <div id="imageModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span>Insert Image</span>
+                <button class="modal-close" onclick="closeModal('imageModal')">&times;</button>
+            </div>
+            <div class="form-group">
+                <label>Alt Text (description)</label>
+                <input type="text" id="imageAlt" placeholder="Image description">
+            </div>
+            <div class="form-group">
+                <label>Image URL</label>
+                <input type="text" id="imageUrl" placeholder="https://example.com/image.png">
+            </div>
+            <div class="form-group">
+                <label>Width (optional)</label>
+                <input type="text" id="imageWidth" placeholder="400">
+            </div>
+            <div class="modal-buttons">
+                <button class="btn-secondary" onclick="closeModal('imageModal')">Cancel</button>
+                <button class="btn-primary" onclick="insertImage()">Insert</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Table Modal -->
+    <div id="tableModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span>Insert Table</span>
+                <button class="modal-close" onclick="closeModal('tableModal')">&times;</button>
+            </div>
+            <div class="form-group">
+                <label>Rows</label>
+                <input type="number" id="tableRows" value="3" min="1">
+            </div>
+            <div class="form-group">
+                <label>Columns</label>
+                <input type="number" id="tableCols" value="3" min="1">
+            </div>
+            <div class="modal-buttons">
+                <button class="btn-secondary" onclick="closeModal('tableModal')">Cancel</button>
+                <button class="btn-primary" onclick="insertTable()">Insert</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Note Modal -->
+    <div id="noteModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span>Insert Note</span>
+                <button class="modal-close" onclick="closeModal('noteModal')">&times;</button>
+            </div>
+            <div class="form-group">
+                <label>Note Type</label>
+                <select id="noteType">
+                    <option value="note">📘 Note</option>
+                    <option value="warning">⚠️ Warning</option>
+                    <option value="tip">💡 Tip</option>
+                    <option value="caution">🔴 Caution</option>
+                    <option value="important">⭐ Important</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Content</label>
+                <textarea id="noteContent" placeholder="Enter your note content"></textarea>
+            </div>
+            <div class="modal-buttons">
+                <button class="btn-secondary" onclick="closeModal('noteModal')">Cancel</button>
+                <button class="btn-primary" onclick="insertNote()">Insert</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Badge Modal -->
+    <div id="badgeModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span>Shields.io Badge</span>
+                <button class="modal-close" onclick="closeModal('badgeModal')">&times;</button>
+            </div>
+            <div class="form-group">
+                <label>Quick Select</label>
+                <div class="badge-container">
+                    <div class="badge-item" onclick="insertBadge('npm', '@latest')">NPM Version</div>
+                    <div class="badge-item" onclick="insertBadge('github', 'license')">License</div>
+                    <div class="badge-item" onclick="insertBadge('build', 'passing')">Build Status</div>
+                    <div class="badge-item" onclick="insertBadge('coverage', '95%')">Coverage</div>
+                    <div class="badge-item" onclick="insertBadge('downloads', '1000k')">Downloads</div>
+                    <div class="badge-item" onclick="insertBadge('stars', '5k')">Stars</div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Custom Badge</label>
+                <input type="text" id="badgeLabel" placeholder="label">
+                <input type="text" id="badgeMessage" placeholder="message" style="margin-top: 8px;">
+                <input type="text" id="badgeColor" placeholder="blue" style="margin-top: 8px;">
+            </div>
+            <div class="modal-buttons">
+                <button class="btn-secondary" onclick="closeModal('badgeModal')">Cancel</button>
+                <button class="btn-primary" onclick="insertCustomBadge()">Insert</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Button Modal -->
+    <div id="buttonModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span>Insert Button</span>
+                <button class="modal-close" onclick="closeModal('buttonModal')">&times;</button>
+            </div>
+            <div class="form-group">
+                <label>Button Text</label>
+                <input type="text" id="buttonText" placeholder="Click me">
+            </div>
+            <div class="form-group">
+                <label>Link URL</label>
+                <input type="text" id="buttonUrl" placeholder="https://example.com">
+            </div>
+            <div class="form-group">
+                <label>Color</label>
+                <div class="color-picker">
+                    <div class="color-option" style="background-color: #2da44e;" onclick="selectColor(this, 'green')" data-color="green"></div>
+                    <div class="color-option" style="background-color: #0366d6;" onclick="selectColor(this, 'blue')" data-color="blue"></div>
+                    <div class="color-option" style="background-color: #6f42c1;" onclick="selectColor(this, 'purple')" data-color="purple"></div>
+                    <div class="color-option" style="background-color: #d1180b;" onclick="selectColor(this, 'red')" data-color="red"></div>
+                    <div class="color-option" style="background-color: #f59e0b;" onclick="selectColor(this, 'orange')" data-color="orange"></div>
+                </div>
+            </div>
+            <div class="modal-buttons">
+                <button class="btn-secondary" onclick="closeModal('buttonModal')">Cancel</button>
+                <button class="btn-primary" onclick="insertButton()">Insert</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mermaid Diagram Modal -->
+    <div id="mermaidModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span>Mermaid Diagram</span>
+                <button class="modal-close" onclick="closeModal('mermaidModal')">&times;</button>
+            </div>
+            <div class="form-group">
+                <label>Diagram Type</label>
+                <select id="diagramType" onchange="updateDiagramTemplate()">
+                    <option value="flowchart">Flowchart</option>
+                    <option value="graph">Graph</option>
+                    <option value="sequence">Sequence</option>
+                    <option value="gantt">Gantt</option>
+                    <option value="class">Class</option>
+                    <option value="state">State</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Diagram Code</label>
+                <textarea id="diagramCode" placeholder="graph TD
+    A[Start] --> B{Decision}
+                    B -->|Yes| C[Process]
+                    B -->|No| D[End]"></textarea>
+            </div>
+            <div class="modal-buttons">
+                <button class="btn-secondary" onclick="closeModal('mermaidModal')">Cancel</button>
+                <button class="btn-primary" onclick="insertMermaidDiagram()">Insert</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chart Modal -->
+    <div id="chartModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span>ASCII Chart</span>
+                <button class="modal-close" onclick="closeModal('chartModal')">&times;</button>
+            </div>
+            <div class="form-group">
+                <label>Chart Type</label>
+                <select id="chartType">
+                    <option value="bar">Bar Chart</option>
+                    <option value="table">Data Table</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Chart Data</label>
+                <textarea id="chartData" placeholder="| Item | Value |
+|------|-------|
+| A    | 100   |
+| B    | 200   |
+| C    | 150   |"></textarea>
+            </div>
+            <div class="modal-buttons">
+                <button class="btn-secondary" onclick="closeModal('chartModal')">Cancel</button>
+                <button class="btn-primary" onclick="insertChart()">Insert</button>
+            </div>
+        </div>
+    </div>
+
     <script>
+        mermaid.initialize({ startOnLoad: true, theme: 'default' });
+
         const textarea = document.getElementById('markdown-input');
         const preview = document.getElementById('preview');
 
-        // Configure marked options
         marked.setOptions({
             breaks: true,
             gfm: true,
         });
 
-        // Update preview as user types
         textarea.addEventListener('input', function() {
             updatePreview();
             localStorage.setItem('markdown-content', textarea.value);
@@ -303,10 +936,183 @@ const hello = 'world';
             const html = marked.parse(markdown);
             const cleanHTML = DOMPurify.sanitize(html);
             preview.innerHTML = cleanHTML;
+            
+            // Re-initialize mermaid diagrams
+            try {
+                mermaid.contentLoaded();
+            } catch(e) {
+                console.log('Mermaid not ready');
+            }
+        }
+
+        function insertMarkdown(before, after, placeholder) {
+            const textarea = document.getElementById('markdown-input');
+            const start = textarea.selectionStart;
+            const end = textarea.selectionEnd;
+            const text = textarea.value;
+            const selectedText = text.substring(start, end) || placeholder;
+            
+            textarea.value = text.substring(0, start) + before + selectedText + after + text.substring(end);
+            textarea.selectionStart = start + before.length;
+            textarea.selectionEnd = start + before.length + selectedText.length;
+            textarea.focus();
+            updatePreview();
+        }
+
+        function insertHeading(level) {
+            if (!level) return;
+            insertMarkdown('#'.repeat(level) + ' ', '', 'Heading ' + level);
+        }
+
+        function insertList(type) {
+            let text = '';
+            if (type === 'unordered') {
+                text = '\n- Item 1\n- Item 2\n- Item 3\n';
+            } else if (type === 'ordered') {
+                text = '\n1. Item 1\n2. Item 2\n3. Item 3\n';
+            } else if (type === 'checklist') {
+                text = '\n- [ ] Task 1\n- [ ] Task 2\n- [x] Task 3\n';
+            }
+            insertAtCursor(text);
+        }
+
+        function insertCodeBlock() {
+            const language = prompt('Enter language (e.g., javascript, python, bash):', 'javascript') || 'javascript';
+            insertAtCursor('\n\`\`\`' + language + '\ncode here\n\`\`\`\n');
+        }
+
+        function insertTable() {
+            const rows = parseInt(document.getElementById('tableRows').value) || 3;
+            const cols = parseInt(document.getElementById('tableCols').value) || 3;
+            
+            let table = '\n|';
+            for (let i = 0; i < cols; i++) {
+                table += ' Header ' + (i + 1) + ' |';
+            }
+            table += '\n|';
+            for (let i = 0; i < cols; i++) {
+                table += ' --- |';
+            }
+            
+            for (let i = 0; i < rows; i++) {
+                table += '\n|';
+                for (let j = 0; j < cols; j++) {
+                    table += ' Data |';
+                }
+            }
+            table += '\n';
+            
+            insertAtCursor(table);
+            closeModal('tableModal');
+        }
+
+        function insertLink() {
+            const text = document.getElementById('linkText').value || 'Link';
+            const url = document.getElementById('linkUrl').value || 'https://example.com';
+            insertAtCursor('[' + text + '](' + url + ')');
+            closeModal('linkModal');
+        }
+
+        function insertImage() {
+            const alt = document.getElementById('imageAlt').value || 'Image';
+            const url = document.getElementById('imageUrl').value || 'https://example.com/image.png';
+            const width = document.getElementById('imageWidth').value;
+            const widthStr = width ? '|width=' + width : '';
+            insertAtCursor('![' + alt + '](' + url + widthStr + ')');
+            closeModal('imageModal');
+        }
+
+        function insertNote() {
+            const type = document.getElementById('noteType').value;
+            const content = document.getElementById('noteContent').value || 'Note content';
+            const markdown = '\n> [!' + type.toUpperCase() + ']\n> ' + content + '\n';
+            insertAtCursor(markdown);
+            closeModal('noteModal');
+        }
+
+        function insertBadge(type, value) {
+            let badge = '';
+            if (type === 'npm') {
+                badge = '[![npm version](https://img.shields.io/npm/v/package-name.svg)](https://www.npmjs.com/package/package-name)';
+            } else if (type === 'github') {
+                badge = '[![GitHub license](https://img.shields.io/github/license/username/repo)](https://github.com/username/repo/blob/master/LICENSE)';
+            } else if (type === 'build') {
+                badge = '[![Build Status](https://img.shields.io/travis/username/repo)](https://travis-ci.org/username/repo)';
+            } else if (type === 'coverage') {
+                badge = '[![Coverage Status](https://img.shields.io/codecov/c/github/username/repo)](https://codecov.io/github/username/repo)';
+            } else if (type === 'downloads') {
+                badge = '[![Downloads](https://img.shields.io/npm/dm/package-name.svg)](https://www.npmjs.com/package/package-name)';
+            } else if (type === 'stars') {
+                badge = '[![GitHub stars](https://img.shields.io/github/stars/username/repo)](https://github.com/username/repo)';
+            }
+            insertAtCursor(badge + '\n');
+            closeModal('badgeModal');
+        }
+
+        function insertCustomBadge() {
+            const label = document.getElementById('badgeLabel').value || 'badge';
+            const message = document.getElementById('badgeMessage').value || 'message';
+            const color = document.getElementById('badgeColor').value || 'blue';
+            const url = 'https://img.shields.io/badge/' + label + '-' + message + '-' + color;
+            insertAtCursor('![Badge](' + url + ')\n');
+            closeModal('badgeModal');
+        }
+
+        function insertButton() {
+            const text = document.getElementById('buttonText').value || 'Button';
+            const url = document.getElementById('buttonUrl').value || '#';
+            const color = document.querySelector('.color-option.selected')?.getAttribute('data-color') || 'blue';
+            
+            const colors = {
+                'green': '#2da44e',
+                'blue': '#0366d6',
+                'purple': '#6f42c1',
+                'red': '#d1180b',
+                'orange': '#f59e0b'
+            };
+            
+            const markdown = '[<button style="background-color: ' + colors[color] + '; color: white; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer;">' + text + '</button>](' + url + ')\n';
+            insertAtCursor(markdown);
+            closeModal('buttonModal');
+        }
+
+        function insertMermaidDiagram() {
+            const code = document.getElementById('diagramCode').value || 'graph TD\nA[Start] --> B[End]';
+            const markdown = '\n\`\`\`mermaid\n' + code + '\n\`\`\`\n';
+            insertAtCursor(markdown);
+            closeModal('mermaidModal');
+        }
+
+        function insertChart() {
+            const type = document.getElementById('chartType').value;
+            const data = document.getElementById('chartData').value;
+            insertAtCursor('\n' + data + '\n');
+            closeModal('chartModal');
+        }
+
+        function selectColor(element, color) {
+            document.querySelectorAll('.color-option').forEach(el => el.classList.remove('selected'));
+            element.classList.add('selected');
+        }
+
+        function insertAtCursor(text) {
+            const start = textarea.selectionStart;
+            textarea.value = textarea.value.substring(0, start) + text + textarea.value.substring(start);
+            textarea.selectionStart = textarea.selectionEnd = start + text.length;
+            textarea.focus();
+            updatePreview();
+        }
+
+        function openModal(modalId) {
+            document.getElementById(modalId).classList.add('active');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
         }
 
         function clearEditor() {
-            if (confirm('Are you sure you want to clear all content?')) {
+            if (confirm('Clear all content?')) {
                 textarea.value = '';
                 updatePreview();
                 localStorage.removeItem('markdown-content');
@@ -324,16 +1130,45 @@ const hello = 'world';
             document.body.removeChild(element);
         }
 
-        function copyHTML() {
-            const html = preview.innerHTML;
-            navigator.clipboard.writeText(html).then(function() {
-                alert('HTML copied to clipboard!');
-            }, function(err) {
-                alert('Failed to copy: ' + err);
+        function copyMarkdown() {
+            const content = textarea.value;
+            navigator.clipboard.writeText(content).then(() => {
+                alert('Markdown copied to clipboard!');
             });
         }
 
-        // Load saved content on page load
+        function updateDiagramTemplate() {
+            const type = document.getElementById('diagramType').value;
+            let template = '';
+            
+            if (type === 'flowchart') {
+                template = 'graph TD\n    A[Start] --> B{Decision}\n    B -->|Yes| C[Process]\n    B -->|No| D[End]';
+            } else if (type === 'sequence') {
+                template = 'sequenceDiagram\n    participant A as User\n    participant B as Server\n    A->>B: Request\n    B-->>A: Response';
+            } else if (type === 'gantt') {
+                template = 'gantt\n    title Project Timeline\n    section Phase\n    Task 1 :a1, 2024-01-01, 30d\n    Task 2 :a2, after a1, 30d';
+            } else if (type === 'class') {
+                template = 'classDiagram\n    class Animal {\n        +name: String\n        +move()\n    }';
+            } else if (type === 'state') {
+                template = 'stateDiagram\n    [*] --> Idle\n    Idle --> Processing\n    Processing --> [*]';
+            }
+            
+            document.getElementById('diagramCode').value = template;
+        }
+
+        function toggleTheme() {
+            document.body.style.backgroundColor = 
+                document.body.style.backgroundColor === 'rgb(246, 248, 250)' ? '#1e1e1e' : '#f6f8fa';
+        }
+
+        // Close modals when clicking outside
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.classList.remove('active');
+            }
+        };
+
+        // Load saved content
         window.addEventListener('load', function() {
             const saved = localStorage.getItem('markdown-content');
             if (saved) {
@@ -342,7 +1177,6 @@ const hello = 'world';
             }
         });
 
-        // Update preview on page load
         updatePreview();
     </script>
 </body>

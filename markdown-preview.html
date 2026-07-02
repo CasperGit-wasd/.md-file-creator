@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Markdown Preview</title>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dompurify/dist/purify.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            color: #24292e;
+            background-color: #fff;
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            height: 100vh;
+            gap: 0;
+        }
+
+        .editor-section,
+        .preview-section {
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid #e1e4e8;
+        }
+
+        .preview-section {
+            border-right: none;
+        }
+
+        .section-header {
+            padding: 12px 16px;
+            background-color: #f6f8fa;
+            border-bottom: 1px solid #e1e4e8;
+            font-weight: 600;
+            font-size: 14px;
+            color: #24292e;
+        }
+
+        textarea {
+            flex: 1;
+            padding: 16px;
+            font-family: 'Monaco', 'Courier New', monospace;
+            font-size: 13px;
+            border: none;
+            outline: none;
+            resize: none;
+            background-color: #fff;
+            color: #24292e;
+        }
+
+        textarea::placeholder {
+            color: #6a737d;
+        }
+
+        #preview {
+            flex: 1;
+            padding: 16px;
+            overflow-y: auto;
+            background-color: #fff;
+        }
+
+        /* GitHub-style Markdown rendering */
+        #preview h1 {
+            padding-bottom: 0.3em;
+            font-size: 2em;
+            font-weight: 600;
+            line-height: 1.25;
+            border-bottom: 1px solid #eaecef;
+            margin: 24px 0 16px 0;
+        }
+
+        #preview h1:first-child {
+            margin-top: 0;
+        }
+
+        #preview h2 {
+            padding-bottom: 0.3em;
+            font-size: 1.5em;
+            font-weight: 600;
+            line-height: 1.25;
+            border-bottom: 1px solid #eaecef;
+            margin: 24px 0 16px 0;
+        }
+
+        #preview h3 {
+            font-size: 1.25em;
+            font-weight: 600;
+            margin: 24px 0 16px 0;
+        }
+
+        #preview h4 {
+            font-size: 1em;
+            font-weight: 600;
+            margin: 24px 0 16px 0;
+        }
+
+        #preview h5 {
+            font-size: 0.875em;
+            font-weight: 600;
+            margin: 24px 0 16px 0;
+        }
+
+        #preview h6 {
+            font-size: 0.85em;
+            font-weight: 600;
+            color: #6a737d;
+            margin: 24px 0 16px 0;
+        }
+
+        #preview p {
+            margin-bottom: 16px;
+        }
+
+        #preview a {
+            color: #0366d6;
+            text-decoration: none;
+        }
+
+        #preview a:hover {
+            text-decoration: underline;
+        }
+
+        #preview ul,
+        #preview ol {
+            padding-left: 2em;
+            margin-bottom: 16px;
+        }
+
+        #preview li {
+            margin-bottom: 4px;
+        }
+
+        #preview code {
+            padding: 0.2em 0.4em;
+            margin: 0;
+            font-size: 85%;
+            background-color: rgba(27, 31, 35, 0.05);
+            border-radius: 3px;
+            font-family: 'Monaco', 'Courier New', monospace;
+        }
+
+        #preview pre {
+            padding: 16px;
+            overflow: auto;
+            font-size: 85%;
+            line-height: 1.45;
+            background-color: #f6f8fa;
+            border-radius: 6px;
+            margin-bottom: 16px;
+        }
+
+        #preview pre code {
+            display: inline;
+            padding: 0;
+            margin: 0;
+            overflow: visible;
+            line-height: inherit;
+            background-color: transparent;
+        }
+
+        #preview blockquote {
+            padding: 0 1em;
+            color: #6a737d;
+            border-left: 0.25em solid #dfe2e5;
+            margin: 0 0 16px 0;
+        }
+
+        #preview table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-bottom: 16px;
+        }
+
+        #preview table th,
+        #preview table td {
+            padding: 6px 13px;
+            border: 1px solid #dfe2e5;
+        }
+
+        #preview table tr:nth-child(2n) {
+            background-color: #f6f8fa;
+        }
+
+        #preview img {
+            max-width: 100%;
+            height: auto;
+            margin: 16px 0;
+        }
+
+        #preview hr {
+            height: 0.25em;
+            padding: 0;
+            margin: 24px 0;
+            background-color: #e1e4e8;
+            border: 0;
+        }
+
+        .controls {
+            padding: 12px 16px;
+            background-color: #f6f8fa;
+            border-top: 1px solid #e1e4e8;
+            display: flex;
+            gap: 8px;
+        }
+
+        .controls button {
+            padding: 6px 12px;
+            font-size: 12px;
+            font-weight: 500;
+            color: #24292e;
+            background-color: #eff3f6;
+            border: 1px solid #d1d5da;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .controls button:hover {
+            background-color: #e6ebf1;
+            border-color: #c5cad1;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                grid-template-columns: 1fr;
+                grid-template-rows: 1fr 1fr;
+            }
+
+            .editor-section,
+            .preview-section {
+                border-right: none;
+                border-bottom: 1px solid #e1e4e8;
+            }
+
+            .preview-section {
+                border-bottom: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="editor-section">
+            <div class="section-header">Markdown Editor</div>
+            <textarea id="markdown-input" placeholder="Enter your markdown here...
+
+# Heading 1
+## Heading 2
+
+**Bold text** and *italic text*
+
+- Bullet point 1
+- Bullet point 2
+
+[Link](https://example.com)
+
+\`\`\`javascript
+const hello = 'world';
+\`\`\`
+"></textarea>
+            <div class="controls">
+                <button onclick="clearEditor()">Clear</button>
+                <button onclick="downloadMarkdown()">Download</button>
+                <button onclick="copyHTML()">Copy HTML</button>
+            </div>
+        </div>
+
+        <div class="preview-section">
+            <div class="section-header">Preview</div>
+            <div id="preview"></div>
+        </div>
+    </div>
+
+    <script>
+        const textarea = document.getElementById('markdown-input');
+        const preview = document.getElementById('preview');
+
+        // Configure marked options
+        marked.setOptions({
+            breaks: true,
+            gfm: true,
+        });
+
+        // Update preview as user types
+        textarea.addEventListener('input', function() {
+            updatePreview();
+            localStorage.setItem('markdown-content', textarea.value);
+        });
+
+        function updatePreview() {
+            const markdown = textarea.value;
+            const html = marked.parse(markdown);
+            const cleanHTML = DOMPurify.sanitize(html);
+            preview.innerHTML = cleanHTML;
+        }
+
+        function clearEditor() {
+            if (confirm('Are you sure you want to clear all content?')) {
+                textarea.value = '';
+                updatePreview();
+                localStorage.removeItem('markdown-content');
+            }
+        }
+
+        function downloadMarkdown() {
+            const content = textarea.value;
+            const element = document.createElement('a');
+            element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(content));
+            element.setAttribute('download', 'README.md');
+            element.style.display = 'none';
+            document.body.appendChild(element);
+            element.click();
+            document.body.removeChild(element);
+        }
+
+        function copyHTML() {
+            const html = preview.innerHTML;
+            navigator.clipboard.writeText(html).then(function() {
+                alert('HTML copied to clipboard!');
+            }, function(err) {
+                alert('Failed to copy: ' + err);
+            });
+        }
+
+        // Load saved content on page load
+        window.addEventListener('load', function() {
+            const saved = localStorage.getItem('markdown-content');
+            if (saved) {
+                textarea.value = saved;
+                updatePreview();
+            }
+        });
+
+        // Update preview on page load
+        updatePreview();
+    </script>
+</body>
+</html>
